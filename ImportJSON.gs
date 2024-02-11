@@ -368,6 +368,11 @@ function parseJSONObject_(object, query, options, includeFunc, transformFunc) {
 function parseData_(headers, data, path, state, value, query, options, includeFunc) {
   var dataInserted = false;
 
+  // Flatten array in case [[object], [object], ...] -> [object, object, ...]
+  if ( Array.isArray(value) && value.length && Array.isArray(value[0]) && isObjectArray_(value[0]) ) {
+    value = value.concat.apply(value[0], value.slice(1));
+  }
+
   if (Array.isArray(value) && isObjectArray_(value)) {
     for (var i = 0; i < value.length; i++) {
       if (parseData_(headers, data, path, state, value[i], query, options, includeFunc)) {
